@@ -1,5 +1,6 @@
 var http = require("http"),
     bl = require('bl'),
+    assert = require('assert'),
     count = 0,
     contents = [];
 
@@ -12,8 +13,7 @@ function printResults() {
 function httpGet(index) {
     http.get(process.argv[2 + index], function(res) {
         res.pipe(bl(function(err, data) {
-            if(err)
-                return console.error(err);
+            assert.ifError(err);
 
             contents[index] = data.toString();
             count++;
