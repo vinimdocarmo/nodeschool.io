@@ -1,19 +1,28 @@
 #include <nan.h>
-#include "iostream"
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 using namespace v8;
 
-NAN_METHOD(Length) {
-  NanScope();
+NAN_METHOD(Delay) {
+  int time = args[0]->IntegerValue(); //milliseconds
+  Local<Function> callback = args[1].As<Function>();
 
-  Local<String> str = args[0].As<String>();
-  int len = strlen(*String::Utf8Value(str));
+  #ifdef _WIN32
+  Sleep(time);
+  #else
+  usleep(time * 1000);
+  #endif
 
-  NanReturnValue(NanNew<Number>(len));
+  NanMakeCallback(NanGetCurrentContext()->Global(), callback, 0, NULL);
+
+  NanReturnUndefined();
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(NanNew("length"), NanNew<FunctionTemplate>(Length)->GetFunction());
+  exports->Set(NanNew("delay"), NanNew<FunctionTemplate>(Delay)->GetFunction());
 }
 
 NODE_MODULE(myaddon, Init);
