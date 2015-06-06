@@ -3,14 +3,17 @@
 
 using namespace v8;
 
-NAN_METHOD(Print) {
+NAN_METHOD(Length) {
+  NanScope();
+
   Local<String> str = args[0].As<String>();
-  std::cout << *String::Utf8Value(str) << std::endl;
-  NanReturnUndefined();
+  int len = strlen(*String::Utf8Value(str));
+
+  NanReturnValue(NanNew<Number>(len));
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(NanNew("print"), NanNew<FunctionTemplate>(Print)->GetFunction());
+  exports->Set(NanNew("length"), NanNew<FunctionTemplate>(Length)->GetFunction());
 }
 
 NODE_MODULE(myaddon, Init);
