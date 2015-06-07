@@ -1,4 +1,12 @@
-var bindings = require('bindings'),
-    addon    = bindings('myaddon');
+var addon = require('bindings')('myaddon');
 
-addon.delay(+process.argv[2], console.log.bind(console, "Done!"));
+var interval = setInterval(function () {
+  process.stdout.write('.');
+}, 50);
+
+addon.delay(+process.argv[2], function () {
+  clearInterval(interval);
+  console.log('Done!');
+});
+
+process.stdout.write('Waiting');
