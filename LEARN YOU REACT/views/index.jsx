@@ -36,6 +36,10 @@ class Todo extends React.Component {
     }
 }
 
+Todo.propTypes = {
+    title: React.PropTypes.string.isRequired
+};
+
 class TodoForm extends React.Component {
     render() {
         return <div className="todoForm">
