@@ -21,6 +21,7 @@ class TodoList extends React.Component {
         this.changeTitle = this.changeTitle.bind(this);
         this.changeDetail = this.changeDetail.bind(this);
         this.addTodo = this.addTodo.bind(this);
+        this.deleteTodo = this.deleteTodo.bind(this);
     }
 
     changeTitle(e) {
@@ -44,14 +45,22 @@ class TodoList extends React.Component {
         this.setState({ detailValue:  '' });
     }
 
+    deleteTodo(title) {
+        var data = this.state.data.filter(function (item) {
+            return item.title !== title;
+        });
+
+        this.setState({ data: data });
+    }
+
     render() {
         let todo = this.props.data.map(function (obj) {
             return (
-                <Todo title={obj.title} key={obj.title}>
+                <Todo title={obj.title} key={obj.title} onDelete={this.deleteTodo}>
                     {obj.detail}
                 </Todo>
             );
-        });
+        }.bind(this));
 
         return (
             <div className="todoList">
@@ -78,6 +87,7 @@ class Todo extends React.Component {
             TodoStyle: style.notCheckedTodo
         };
         this.handleChange = this.handleChange.bind(this);
+        this._onDelete = this._onDelete.bind(this);
     }
 
     handleChange(e) {
@@ -89,9 +99,14 @@ class Todo extends React.Component {
         });
     }
 
+    _onDelete() {
+        this.props.onDelete(this.props.title);
+    }
+
     render() {
         return (
             <tr style={this.state.TodoStyle}>
+                <td style={style.tableContent}><button onClick={this._onDelete}>X</button></td>
                 <td style={{border: style.tableContent.border}}>
                     <input type="checkbox" checked={this.state.checked} onChange={this.handleChange}/>
                 </td>
